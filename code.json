@@ -1,7 +1,9 @@
 {
 	"emiDetails": [{
 			"bank": "Select Bank",
-			"tenure": "Select Tenure"
+			"tenure": {
+                              " " : " "
+                          }
 		},
 
 		{
