@@ -1,0 +1,162 @@
+<html><head><meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+
+
+<style>
+html, body {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+canvas {
+  display: block;
+}
+
+p {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  color: #456;
+  text-align: center;
+}
+</style>
+
+</head><body><div class="snakeGame">
+  <canvas class"snakeboard"="" width="414" height="752"></canvas>
+  <p class="msg">Message</p>
+</div>
+
+
+<script>
+let can = document.querySelector("canvas"),
+ctx = can.getContext("2d"),
+width = can.width = window.innerWidth,
+height=can.height = window.innerHeight,
+msg = document.querySelector("p")
+
+
+let hs = null, 
+    he = null,
+    vs = null,
+    ve = null
+
+let p = {x: 10, y: 10}, //Player Pos
+    e = {x: 15, y: 15}, //Enemy Pos
+    g = 20, //Grid Size
+    t = 20, //Tail Count
+    v = {x: 0, y: 0} //Velocity
+    
+let signal = "",
+    trail = [],
+    tail = 5
+
+
+startGame()
+
+
+function startGame() {
+  
+  setInterval(logic, 1000/15)
+}
+
+
+
+
+
+
+
+
+function logic() {
+  p.x += v.x
+  p.y += v.y
+  
+  if (p.x < 0) {
+    p.x = t-1
+  }
+  
+  if (p.x > t-1) {
+    p.x = 0
+  }
+  
+  if (p.y < 0) {
+    p.y = t-1
+  }
+  
+  if (p.y > t-1) {
+    p.y = 0
+  }
+  
+  ctx.fillStyle = "lime"
+  ctx.fillRect(0, 0, width, height)
+  
+  ctx.fillStyle="#456";
+  for(let i=0;i<trail.length;i++) {
+ ctx.fillRect(trail[i].x*g,trail[i].y*g,g-2,g-2);
+
+if (trail[i].x == p.x && trail[i].y == p.y) {
+  tail = 5
+}
+    }
+    
+    trail.push({x:p.x,y:p.y});
+    while(trail.length > tail) {
+      trail.shift()
+    }
+    
+    if (e.x == p.x && e.y == p.y) {
+      tail++
+    e.x = Math.floor(Math.random() * t)
+    e.y = Math.floor(Math.random() * t)
+    }
+    ctx.fillStyle = "red"
+    ctx.fillRect(e.x * g, e.y * g, g-2, g-2)
+}
+    
+
+  
+
+      
+// Swipe Gesture - - -        
+ can.addEventListener("touchstart",function(event){
+
+   if(event.touches.length === 1){
+    hs = event.touches.item(0).clientX;
+    vs = event.touches.item(0).clientY;
+   }else{
+    hs = null;
+    vs = null;
+   }
+  });
+
+can.addEventListener("touchend",function(event){
+    const offset = 15
+    
+    if(hs){
+      he = event.changedTouches.item(0).clientX;
+      ve = event.changedTouches.item(0).clientY;
+
+      if(he > hs + offset){
+        v.x = 1; v.y = 0
+        signal = "Right"
+      }
+      if(he < hs - offset ){
+        v.x = -1; v.y = 0;
+        signal = "Left"
+      }
+      
+      
+      if(ve > vs + offset){
+        v.y = 1; v.x = 0;
+        signal = "Down"
+      }
+      if(ve < vs - offset ){
+        v.y = -1; v.x = 0;
+        signal = "Up"
+      }
+    }
+    
+    msg.innerHTML = signal
+  });
+</script>
+
+</body></html>
